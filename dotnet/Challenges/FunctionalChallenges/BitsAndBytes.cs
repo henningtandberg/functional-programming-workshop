@@ -3,37 +3,20 @@ namespace Challenges;
 public static class BitsAndBytes
 {
     // Original: int bitcount(unsigned x), "The C Programming Language", page 50
-    public static int BitCount(uint x)
-    {
-        int b;
-        
-        for (b = 0; x != 0; x >>= 1)
-            if ((x & 01) != 0)
-                b++;
-        
-        return b;
-    }
+    public static int BitCount(uint x) =>
+        x == 0 ? 0 : BitCount(x >> 1) + (int)(x & 1);
+
+    // In the next three methods I use [..size] instead of slicing with Span<T> for more compact code
+    // But .Slice(0, size) is more probably more readable
     
-    public static void ByteCopy(byte[] src, byte[] dst, int size)
-    {
-        if (size == 0)
-            return;
+    public static void ByteCopy(byte[] src, byte[] dst, int size) =>
+        ((Span<byte>)src)[..Min([size, src.Length, dst.Length])].CopyTo(dst);
 
-        var n = Math.Min(size, Math.Min(src.Length, dst.Length));
-        
-        for (var i = 0; i < n; i++)
-            dst[i] = src[i];
-    }
+    public static void ByteZero(byte[] a, int size) =>
+        ((Span<byte>)a)[..Min([a.Length, size])].Clear();
 
-    public static void ByteZero(byte[] a, int size)
-    {
-        for (var i = 0; i < Math.Min(size, a.Length); i++)
-            a[i] = 0;
-    }
-
-    public static void ByteSet(byte[] a, byte value, int size)
-    {
-        for (var i = 0; i < Math.Min(size, a.Length); i++)
-            a[i] = value;
-    }
+    public static void ByteSet(byte[] a, byte value, int size) =>
+        ((Span<byte>)a)[..Min([a.Length, size])].Fill(value);
+    
+    private static int Min(int[] numbers) => numbers.MinBy(n => n);
 }
