@@ -2,96 +2,48 @@ namespace Challenges;
 
 public static class MathematicalFunctions
 {
-    public static int Sum(int[] numbers)
-    {
-        var sum = 0;
-        
-        foreach(var number in numbers)
-            sum += number;
-        
-        return sum;
-    }
+    // Existing LINQ equivalent: numbers.Sum()
+    public static int Sum(int[] numbers) => numbers
+        .Aggregate(0, (a, b) => a + b);
     
-    public static int Max(int[] numbers)
-    {
-        var max = numbers[0];
-        
-        for(var i = 0; i < numbers.Length; i++)
-            if (numbers[i] > max)
-                max = numbers[i];
-        
-        return max;
-    }
+    // Existing LINQ equivalent: numbers.Max()
+    public static int Max(int[] numbers) => numbers
+        .Skip(1)
+        .Aggregate(numbers[0], Math.Max);
     
-    public static int Min(int[] numbers)
-    {
-        var min = numbers[0];
-        
-        foreach(var number in numbers)
-            if (number < min)
-                min = number;
-        
-        return min;
-    }
-    
-    public static int IndexOf(int[] numbers, int numberToFind)
-    {
-        for(var i = 0; i < numbers.Length; i++)
-            if (numbers[i] == numberToFind)
-                return i;
+    // Existing LINQ equivalent: numbers.Min()
+    public static int Min(int[] numbers) => numbers
+        .Skip(1)
+        .Aggregate(numbers[0], Math.Min);
 
-        return -1;
-    }
-    
-    public static bool Contains(int[] numbers, int numberToFind)
-    {
-        foreach(var number in numbers)
-            if (number == numberToFind)
-                return true;
-        
-        return false;
-    }
-    
-    public static int[] Reverse(int[] numbers)
-    {
-        var reversed = new int[numbers.Length];
-        
-        for(var i = 0; i < numbers.Length; i++)
-            reversed[i] = numbers[numbers.Length - 1 - i];
-        
-        return reversed;
-    }
-    
-    public static int[] Copy(int[] numbers)
-    {
-        var copied = new int[numbers.Length];
-        
-        for(var i = 0; i < numbers.Length; i++)
-            copied[i] = numbers[i];
-        
-        return copied;
-    }
-    
-    public static int CountOccurrences(int[] numbers, int numberToFind)
-    {
-        var count = 0;
-        
-        foreach(var number in numbers)
-            if (number == numberToFind)
-                count++;
-        
-        return count;
-    }
+    public static int IndexOf(int[] numbers, int numberToFind) => numbers
+        .Select((number, index) => (number, index))
+        .Where(x => x.number == numberToFind)
+        .Select(x => x.index)
+        .FirstOrDefault();
 
-    public static int Power(int number, int n)
-    {
-        var p = 1;
-        
-        for (var i = 1; i <= n; i++)
-            p *= number;
+    // Existing LINQ equivalent: numbers.Where(number => number == numberToFind).Any()
+    // But LINQ has a Any overload that takes a predicate
+    public static bool Contains(int[] numbers, int numberToFind) => numbers
+        .Any(number => number == numberToFind);
+    
+    
+    // Existing LINQ equivalent: numbers.Reverse()
+    public static int[] Reverse(int[] numbers) => numbers
+        .Select((number, index) => numbers[numbers.Length - 1 - index])
+        .ToArray();
+    
+    public static int[] Copy(int[] numbers) => numbers.ToArray();
 
-        return p;
-    }
+    // Existing LINQ equivalent: numbers.Where(number => number == numberToFind).Count()
+    // But LINQ has a Count overload that takes a predicate
+    public static int CountOccurrences(int[] numbers, int numberToFind) => numbers
+        .Count(number => number == numberToFind);
+
+    public static int Power(int number, int n) =>
+        Enumerable
+            .Repeat(number, n)
+            .Aggregate(1, (a, b) => a * b);
     
     public static int GetAmountOfPrimes(int n)
     {

@@ -1,69 +1,34 @@
-export function sum(numbers: number[]): number {
-    let sum = 0;
-    for(let number of numbers)
-        sum += number;
+export const sum = (numbers: number[]): number => numbers
+    .reduce((a, b) => a + b, 0)
 
-    return sum;
-}
+export const max = (numbers: number[]): number => numbers
+    .slice(1)
+    .reduce((a, b) => Math.max(a, b), numbers[0]);
 
-export function max(numbers: number[]): number {
-    let max = numbers[0];
-    for(let i = 0; i < numbers.length; i++)
-        if (numbers[i] > max)
-            max = numbers[i];
+export const min = (numbers: number[]): number => numbers
+    .slice(1)
+    .reduce((a, b) => Math.min(a, b), numbers[0]);
 
-    return max;
-}
+export const indexOf = (numbers: number[], numberToFind:number): number => numbers
+    .map((number, index) => {
+        return { number: number, index: index }
+    })
+    .filter(x => x.number === numberToFind)
+    .map(x => x.index)[0]; //Lazy
 
-export function min(numbers: number[]): number {
-    let min = numbers[0];
-    for(let number of numbers)
-        if (number < min)
-            min = number;
+export const contains = (numbers: number[], numberToFind:number): boolean => numbers
+    .filter(number => number === numberToFind)
+    .length > 0;
 
-    return min;
-}
+export const reverse = (numbers: number[]): number[] => numbers
+    .map(((number, index) => numbers[numbers.length - 1 - index]));
 
-export function indexOf(numbers: number[], numberToFind:number): number {
-    for(let i = 0; i < numbers.length; i++)
-        if (numbers[i] === numberToFind)
-            return i;
+export const copy = (numbers: number[]): number[] => numbers
+    .map(number => number);
 
-    return -1;
-}
-
-export function contains(numbers: number[], numberToFind:number): boolean {
-    for(let number of numbers)
-        if (number === numberToFind)
-            return true;
-
-    return false;
-}
-
-export function reverse(numbers: number[]): number[] {
-    let reversed: number[] = new Array(numbers.length);
-    for(let i = 0; i < numbers.length; i++)
-        reversed[i] = numbers[numbers.length - 1 - i];
-
-    return reversed;
-}
-
-export function copy(numbers: number[]): number[] {
-    let copied: number[] = new Array(numbers.length);
-    for(let i = 0; i < numbers.length; i++)
-        copied[i] = numbers[i];
-
-    return copied;
-}
-
-export function countOccurrences(numbers: number[], numberToFind:number): number {
-    let count = 0;
-    for(let number of numbers)
-        if (number === numberToFind)
-            count++;
-
-    return count;
-}
+export const countOccurrences = (numbers: number[], numberToFind:number): number => numbers
+    .filter(number => number === numberToFind)
+    .length;
 
 export function getAmountOfPrimes(N: number): number
 {
